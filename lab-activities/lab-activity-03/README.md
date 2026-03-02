@@ -18,21 +18,7 @@ PCD a.y. 2025-2026 - ISI LM UNIBO - Cesena Campus
 	- Check check & act problem in `pcd.lab03.check_act`
 	- Implement a solution
 
-### Thread Liveness & Deadlocks
-
-- [Lab Notes] Thread Liveness
-- The simplest deadlock in Java: `pcd.lab03.deadlock_simplest.TestDeadlockSimplest`
-  - Analysis using VisualVM
-- More complex example: AccountManager in pcd.lab04.liveness.accounts 
-  - requirements
-    - no race conditions in updating individual accounts
-    - transfer between accounts should be atomic 
-    - maximising concurrency
-      - two transactions involving distinct couples of accounts should be served concurrentl
-- Deadlocks when implementing MVC and Observer pattern
-  - `pcd.lab03.deadlock_obs.TestObsPatternDeadlock`
-
-### Model Checking with Java Path Finder (JPF)
+### Model Checking with Java Path Finder (JPF) - Getting Started
 
 - [About JPF](https://github.com/javapathfinder/jpf-core)
 	- [Main docs](https://github.com/javapathfinder/jpf-core/wiki)
@@ -50,6 +36,7 @@ PCD a.y. 2025-2026 - ISI LM UNIBO - Cesena Campus
 
        `git clone https://github.com/javapathfinder/jpf-core.git`
     2) Change directory to `jpf-core`
+
     3) Build the image:
 
        `docker-compose build`
@@ -62,47 +49,27 @@ PCD a.y. 2025-2026 - ISI LM UNIBO - Cesena Campus
 
        `docker-compose run --rm -v <path to PCD repo>/pcd-2025-2026/lab-activities/lab-activity-03/pcd-jpf:/pcd-jpf jpf-dev` 
 
-
     5) Build JPF
 
         `./gradlew clean build`
 
-    6) Use JPF - example:
+       - On Windows systems you may get an error such as:
+         
+         `/bin/sh^M: bad interpreter`
+          
+         This is due to unwanted (not visible) line ending characters (`\r\n`) that could have been added to the file name `gradlew`. If a file with Windows line endings is used on Linux/macOS (inside the container), it causes the error mentioned above. 
+
+           To remove the unwanted characters, just type (from inside the container):
+
+         `sed -i 's/\r$//' gradlew`  
+         `chmod +x gradlew`
+ 
+          - `sed` is a command-line tool used to search, replace, insert, and delete text in files. Int his case it substitutes sequence of characters `\r\n` (represented by the pattern `\r$` with empty (so it removes the characters). 
+          - `chmode +x` is to make the script file executable.
+
+    6) To check if JPF is working, we launch one of the example available with the JPF distribution, the Racer (a Java program with a race condition):
 
         `java -jar build/RunJPF.jar src/examples/Racer.jpf`
       
-- Using JPF
-  - Preparing the environment:
-    - Start the container mounting the [`pcd-jpf`]() directory included in the repo (in `lab-activity-03`):
 
-   		`docker-compose run --rm -v <path to PCD repo>/pcd-2025-2026/lab-activities/lab-activity-03/pcd-jpf:/pcd-jpf jpf-dev` 
-  	- Compile all Java sources:
-    
-    	`javac -d /pcd-jpf/target/classes -classpath /pcd-jpf/target/classes:/pcd-jpf/lib/jpf.jar /pcd-jpf/src/main/java/pcd/lab03/jpf/*.java`
- 
-  		(the classpath must include also `jpf.jar` including the Verify API classes)
-
-  - **Example #1** - model-checking sequential programs...
-    - sequential program - `pcd.lab03.jpf.TestSequential`
-      - `java -jar build/RunJPF.jar /pcd-jpf/src/main/java/pcd/lab03/jpf/TestSequential.jpf`
-    - sequential program with input (using Verify API) - `pcd.lab03.jpf.TestSequentialWihtInput`
-      - `java -jar build/RunJPF.jar /pcd-jpf/src/main/java/pcd/lab03/jpf/TestSequential.jpf`
-    - sequential program with random (using Verify API) - `pcd.lab03.jpf.TestSequentialWihtRand`
-      - `java -jar build/RunJPF.jar /pcd-jpf/src/main/java/pcd/lab03/jpf/TestSequential.jpf`
-  - **Example #2** - model-checking simple concurrent programs 
-    - simple concurrent program - `pcd.lab03.jpf.TestScenarios`
-      - `java -jar build/RunJPF.jar /pcd-jpf/src/main/java/pcd/lab03/jpf/TestScenarios.jpf`
-      - look at the number of states and traces (scenarios)
-    - defining atomic blocks (using Verify API)  
-      - `java -jar build/RunJPF.jar /pcd-jpf/src/main/java/pcd/lab03/jpf/TestScenariosWithAtomic.jpf`
-      - look at the number of states and traces
-  - **Example #3** - Finding lost updates races
-    - `pcd.lab03.jpf.TestLostUpdate`
-    - `java -jar build/RunJPF.jar /pcd-jpf/src/main/java/pcd/lab03/jpf/TestLostUpdate.jpf`
-  - **Example #4** - Finding check-and-act races 
-    - `pcd.lab03.jpf.TestCheckAct`
-    - `java -jar build/RunJPF.jar /pcd-jpf/src/main/java/pcd/lab03/jpf/TestCheckAct.jpf`
-  - **Example #5** - Detecting deadlocks
-    - `pcd.lab03.jpf.TestDeadlock`
-    - `java -jar build/RunJPF.jar /pcd-jpf/src/main/java/pcd/lab03/jpf/TestDeadlock.jpf`
  
