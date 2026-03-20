@@ -4,23 +4,16 @@ import java.util.*;
 
 public class Board {
 
-    private Boundary bounds;
-    private ArrayList<Ball> balls;    
+    private List<Ball> balls;    
     private Ball playerBall;
+    private Boundary bounds;
     
-    public Board(){
-        bounds = new Boundary(-1.0,-1.0,1.0,1.0);
-        balls = new ArrayList<Ball>();
-    } 
+    public Board(){} 
     
-    public void init() {
-    	
-    	var b1 = new Ball(new P2d(0, 0.5), 0.05, 0.75, new V2d(0,0));
-    	var b2 = new Ball(new P2d(0.05, 0.55), 0.025, 0.5, new V2d(0,0));
-    	balls.add(b1);
-    	balls.add(b2);
-    	
-    	playerBall = new Ball(new P2d(0, 0), 0.06, 1, new V2d(0,0.3)); 
+    public void init(BoardConf conf) {
+    	balls = conf.getSmallBalls();    	
+    	playerBall = conf.getPlayerBall(); 
+    	bounds = conf.getBoardBoundary();
     }
     
     public void updateState(long dt) {
